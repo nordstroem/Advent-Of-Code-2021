@@ -4,6 +4,7 @@ from collections import defaultdict
 all_lines = util.read_lines("inputs/day3.txt")
 bits = len(all_lines[0])
 
+
 def get_most_common_bits(lines):
     N = len(lines)
     one_count = defaultdict(int)
@@ -20,6 +21,7 @@ def get_most_common_bits(lines):
 
     most_common_bits = {i: rule(val) for (i, val) in one_count.items()}
     return most_common_bits
+
 
 def part1():
     most_common_bits = get_most_common_bits(all_lines)
