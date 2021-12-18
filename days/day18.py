@@ -3,8 +3,6 @@ from dataclasses import dataclass, field
 from typing import Type
 import math
 from functools import reduce
-import sys
-from binarytree import tree, bst, heap, Node
 
 
 @dataclass
@@ -117,31 +115,6 @@ def try_split(number: Number):
     if try_split(number.right):
         return True
     return False
-
-
-def print_number(number, end="\n"):
-    if not number:
-        return
-    if number.value != None:
-        print(number.value, end=end)
-        return
-    print("[", end="")
-    print_number(number.left, "")
-    print(",", end="")
-    print_number(number.right, "")
-    print("]", end=end)
-
-
-def create_binarytree(number):
-    if number == None:
-        return None
-    bt = Node(-1)
-    if number.value != None:
-        bt.value = number.value
-        return bt
-    bt.left = create_binarytree(number.left)
-    bt.right = create_binarytree(number.right)
-    return bt
 
 
 def reduce_number(number):
