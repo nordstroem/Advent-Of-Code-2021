@@ -1,5 +1,6 @@
 import math
 from functools import reduce
+import re
 
 
 def read_lines(path, fun=lambda x: x):
@@ -37,3 +38,7 @@ def xgcd(a, b):
         y0, y1 = y1, y0 - q * y1
         x0, x1 = x1, x0 - q * x1
     return b, x0, y0
+
+
+def extract_ints(string):
+    return list(map(int, re.findall(r"-?\d+", string)))
