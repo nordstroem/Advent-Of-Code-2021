@@ -19,10 +19,11 @@ def parse(line):
 org_grid = np.array(util.read_lines("inputs/day23.txt", parse), dtype=np.uint8)
 rows, cols = org_grid.shape
 
-room_range = range(2, 4)
+room_range = range(2, 6)
 costs = {0: 1, 1: 10, 2: 100, 3: 1000}
 
-target_grid = ["#############", "#...........#", "###A#B#C#D###", "###A#B#C#D###", "#############"]
+target_grid = ["#############", "#...........#", "###A#B#C#D###", "###A#B#C#D###", "###A#B#C#D###", "###A#B#C#D###",
+               "#############"]
 target_grid = np.array([parse(line) for line in target_grid])
 tiebreaker = count()
 
@@ -63,7 +64,7 @@ def get_invalid_spots(r0, c0, grid):
         if a_type == room:
             occupied = False
             for c in coord:
-                occupied = occupied or grid[c] != a_type and grid[c] != converter["."]
+                occupied = occupied or (grid[c] != a_type and grid[c] != converter["."])
             if occupied:
                 for c in coord:
                     invalid_spots.add(c)
@@ -135,7 +136,7 @@ def heuristic(grid):
     for r, c in get_corridor():
         a_type = grid[r, c]
         if a_type != converter["."]:
-            h += costs[a_type] * abs(c - base_c[a_type])
+            h += costs[a_type] * (abs(c - base_c[a_type]) + min(np.abs(r - np.array(room_range))))
     return h
 
 
@@ -166,10 +167,10 @@ def dijkstra():
     # print(valid_stop(1, 6, rn, cn))
 
 
-# dijkstra()
+dijkstra()
 
 
-cProfile.run("dijkstra()")
+# cProfile.run("dijkstra()")
 
 
 def part2():
