@@ -60,33 +60,52 @@ def get_adjacent(r, c):
 def get_invalid_spots(r0, c0, grid):
     invalid_spots = set()
     a_type = grid[r0, c0]
-    for room, coord in get_rooms().items():
+    for room, coord in rooms.items():
         if a_type == room:
             occupied = False
             for c in coord:
-                occupied = occupied or (grid[c] != a_type and grid[c] != converter["."])
+                occupied = occupied or ((grid[c] != a_type) and (grid[c] != converter["."]))
             if occupied:
                 for c in coord:
-                    invalid_spots.add(c)
+                    if c[1] == 1: 
+                        invalid_spots.add(c)
         else:
             if (r0, c0) not in coord:
                 for c in coord:
                     invalid_spots.add(c)
 
+
     return invalid_spots
 
 
+def only_allowed_room_spot(grid, a_type):
+    base_c = {0: 3, 1: 5, 2: 7, 3: 9}
+    occupied = False
+    for c in rooms[a_type]:
+        occupied = occupied or ((grid[c] != a_type) and (grid[c] != converter["."]))
+    allowed_coord = None
+    if not occupied:
+        for rtt in range(2, 2 + len(rooms[0])):
+            if grid[rtt, base_c[a_type]] == converter["."]:
+                allowed_coord = rtt, base_c[a_type]
+
+    return allowed_coord
+
 @lru_cache(None)
-def valid_stop(r0, c0, rt, ct):
+def valid_stop(r0, c0, rt, ct, allowed_room_spot):
     invalid_stops = [(1, 3), (1, 5), (1, 7), (1, 9)]
     was_in_hallway = True
     target_is_hallway = True
-    for coord_list in get_rooms().values():
+
+    for room, coord_list in rooms.items():
         for coord in coord_list:
             if coord == (r0, c0):
                 was_in_hallway = False
             elif coord == (rt, ct):
                 target_is_hallway = False
+
+    if not target_is_hallway and (rt, ct) != allowed_room_spot:
+        return False
 
     return (rt, ct) not in invalid_stops and not (was_in_hallway and target_is_hallway)
 
@@ -101,7 +120,7 @@ def get_possible_stops(r, c, grid):
     a_type = grid[r, c]
     cost = costs[a_type]
     invalid_spots = get_invalid_spots(r, c, grid)
-
+    allowed_room_spot = only_allowed_room_spot(grid, a_type)
     while len(s) > 0:
         v = s.pop()
         if v not in visited:
@@ -111,7 +130,7 @@ def get_possible_stops(r, c, grid):
                     if (rn, cn) not in steps:
                         steps[rn, cn] = steps[v] + cost
                     s.append((rn, cn))
-                    if valid_stop(r, c, rn, cn):
+                    if valid_stop(r, c, rn, cn, allowed_room_spot):
                         stops.add((rn, cn))
 
     return [(coord, steps[coord]) for coord in stops if coord != (r, c)]
@@ -138,7 +157,6 @@ def heuristic(grid):
         if a_type != converter["."]:
             h += costs[a_type] * (abs(c - base_c[a_type]) + min(np.abs(r - np.array(room_range))))
     return h
-
 
 def dijkstra():
     dist = defaultdict(lambda: math.inf)
@@ -170,8 +188,8 @@ def dijkstra():
 dijkstra()
 
 
-# cProfile.run("dijkstra()")
+#cProfile.run("dijkstra()")
 
-
+#print(get_possible_stops(4, 5, org_grid))
 def part2():
     pass
