@@ -67,13 +67,12 @@ def get_invalid_spots(r0, c0, grid):
                 occupied = occupied or ((grid[c] != a_type) and (grid[c] != converter["."]))
             if occupied:
                 for c in coord:
-                    if c[1] == 1: 
+                    if c[1] == 1:
                         invalid_spots.add(c)
         else:
             if (r0, c0) not in coord:
                 for c in coord:
                     invalid_spots.add(c)
-
 
     return invalid_spots
 
@@ -90,6 +89,7 @@ def only_allowed_room_spot(grid, a_type):
                 allowed_coord = rtt, base_c[a_type]
 
     return allowed_coord
+
 
 @lru_cache(None)
 def valid_stop(r0, c0, rt, ct, allowed_room_spot):
@@ -158,6 +158,7 @@ def heuristic(grid):
             h += costs[a_type] * (abs(c - base_c[a_type]) + min(np.abs(r - np.array(room_range))))
     return h
 
+
 def dijkstra():
     dist = defaultdict(lambda: math.inf)
     dist[org_grid.tobytes()] = 0
@@ -185,11 +186,11 @@ def dijkstra():
     # print(valid_stop(1, 6, rn, cn))
 
 
-dijkstra()
+# dijkstra()
 
 
-#cProfile.run("dijkstra()")
+# cProfile.run("dijkstra()")
 
-#print(get_possible_stops(4, 5, org_grid))
+# print(get_possible_stops(4, 5, org_grid))
 def part2():
     pass
